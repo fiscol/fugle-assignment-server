@@ -11,6 +11,7 @@
 ## Built With
 
 * [node-fetch](https://www.npmjs.com/package/node-fetch) - For retrieving 3rd party async API with convenience.
+* [node-schedule](https://www.npmjs.com/package/node-schedule) - For refreshing Firebase DB request  counter per minute with a cron-job format package.
 * [mocha](https://mochajs.org) - For testing cases in developing environment.
 
 
