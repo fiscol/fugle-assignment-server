@@ -1,6 +1,6 @@
 {
   "name": "fugle-assignment-server",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "This Web API server is built to retrieve real-time stock data from 3rd party API services.",
   "private": true,
   "scripts": {
@@ -8,13 +8,12 @@
     "test": "mocha"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "firebase-admin": "^8.8.0",
-    "morgan": "~1.9.1",
     "node-fetch": "^2.6.0",
     "node-schedule": "^1.3.2",
+    "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {

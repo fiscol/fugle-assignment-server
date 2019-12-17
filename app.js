@@ -1,16 +1,21 @@
 var express = require('express');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
-var API_Router = require('./routes/api');
+var socket_io = require("socket.io");
 
 var app = express();
 
-app.use(logger('dev'));
+// Socket.io
+var io = socket_io();
+app.io = io;
+
+var API_Router = require('./routes/api');
+var WebSocket_Router = require('./routes/websocket')(io);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
-app.use('/', API_Router);
+app.use('/api', API_Router);
+app.use('/ws', WebSocket_Router);
+
+io.origins('*:*');
 
 module.exports = app;
