@@ -17,8 +17,6 @@ app.use(express.urlencoded({ extended: false }));
 
 // API Route
 app.use('/api', API_Router);
-// Websocket Route
-app.use('/ws', WebSocket_Router);
 
 // Open hostname and port to use Socket connect
 io.origins('*:*');

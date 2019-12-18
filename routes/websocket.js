@@ -2,42 +2,61 @@ module.exports = function (io) {
     const app = require('express');
     const ws_router = app.Router();
     const socket_service = require('../functional/socket'); // Test from socket-io.client connect
-    const symbol_data_service = require('../functional/symbol_data'); // Set return symbol data with IEX last symbol data
+    const data_process = require('../functional/data_process'); // Process user data and subscription
     const schedule = require('../functional/schedule'); // Using schedule service to refresh temp-stored IEX symbol data per minute
-    const last_stock_url = 'https://ws-api.iextrading.com/1.0/last'; // Doc: https://iextrading.com/developers/docs/#last
-    const iex_socket = require('socket.io-client')(last_stock_url); // Get latest IEX symbol data using socket-io.client
+    const iex_service = require('../functional/iex_socket')(io);
 
     // Refresh temp-stored IEX symbol data every minute
     schedule.refresh_all_symbol_data();
     // Test Websocket Route using socket-io.client
-    socket_service._subscribeTest('fb,AAPL', 'room123');
+    socket_service._subscribeTest('local', 'fb,AAPL');
 
-    // Set Websocket route to /ws/last
+    data_process._initDataFiles();
+
+    // Set Websocket route to /last
     io.of('/last').on('connection', function (socket) {
-        // Let the client join socket room
-        socket.on('join', function (room) {
-            socket.join(room, function () {
-                io.of('/last').in(room).emit("joined_room", room);
-                io.of('/last').to(socket.id).emit("message", socket.id);
+        // Subscribe with symbols to receive IEX last data
+        socket.on('subscribe', (user_name, symbols) => {
+            // Check user subscribed symbols total <= 10
+            data_process._checkUserSubscribe(user_name, symbols).then(result => {
+                if (result) {
+                    // Update users and symbols_subscribe data
+                    data_process._updateUserAndSubscription(user_name, symbols).then(() => {
+                        // Add user to symbols rooms
+                        socket.join(symbols.toUpperCase().split(','));
+                        // Check if symbol subscribed before
+                        data_process._checkSymbolSubscibed(symbols).then(new_symbols => {
+                            if (new_symbols.length > 0) {
+                                iex_service._subscribeIEX(new_symbols);
+                            }
+                        })
+                    })
+                }
+                else {
+                    io.of('/last').to(socket.id).emit('message', 'Your total subscribed symbol exceeds the limit.');
+                }
             });
-        });
-        // Subscribe with symbols to receive IEX last and minute data
-        socket.on('subscribe', (symbols, room) => {
-            // Listen to the channel's messages
-            iex_socket.on('message', last_object_str => {
-                // Set return symbol data
-                io.of('/last').in(room).emit('room_message', JSON.stringify(symbol_data_service._setSymbolData(JSON.parse(last_object_str))));
-            })
-
-            // Subscribe to topics (i.e. appl,fb,aig+)
-            iex_socket.emit('subscribe', symbols)
-
-            // Disconnect from the channel
-            iex_socket.on('disconnect', () => console.log('Disconnected.'))
         })
         // Unsubscribe symbols
-        socket.on('unsubscribe', symbols => {
-            iex_socket.emit('unsubscribe', symbols);
+        socket.on('unsubscribe', (user_name, symbols) => {
+            // Remove user from symbol subscriber
+            data_process._handleUnsubscription(user_name, symbols).then(unsubscribe_symbols => {
+                // If symbols has no subscriber
+                if (unsubscribe_symbols.length > 0) {
+                    // Unsubscribe symbols from IEX socket
+                    iex_service._unsubscribeIEX(unsubscribe_symbols);
+                    // Close symbols room
+                    unsubscribe_symbols.forEach(symbol => {
+                        io.of('/last').in(symbol).clients((error, socketIds) => {
+                            socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(symbol));
+                        });
+                    })
+                }
+            })
+        })
+        // Get 
+        socket.on('/minute_data', (symbols) => {
+
         })
     });
     // Websocket close event

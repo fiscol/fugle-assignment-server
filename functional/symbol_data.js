@@ -5,9 +5,9 @@
   * {
   *     'Some symbol':
   *         {
-  *             'seq': @param {Number} seq Last price data sequence ID
+  *             'time': @param {Number} time Last price data time
   *             'data': @param {Array} data Every price data of this symbol in this current minute
-  *             'latest': @param {Object} latest The latest return data created by this seq
+  *             'latest': @param {Object} latest The latest return data created by this time
   *         }
   * }
   */ 
@@ -23,10 +23,10 @@ let allSymbolPrices = {};
   *     }
   */
 exports._setSymbolData = function (last_object) {
-    let seq = last_object['seq'];
+    let time = last_object['time'];
     let symbol = last_object['symbol'];
     // If temp stored data already has this sequence data record, just return the latest symbolData
-    if (allSymbolPrices.hasOwnProperty(symbol) && allSymbolPrices[symbol]['seq'] <= seq) {
+    if (allSymbolPrices.hasOwnProperty(symbol) && allSymbolPrices[symbol]['time'] >= time) {
         return allSymbolPrices[symbol]['latest'];
     }
     let symbolData = {};
@@ -42,7 +42,7 @@ exports._setSymbolData = function (last_object) {
     };
     // First record of symbol in this minute, temp stored data not having records yet
     if (!allSymbolPrices.hasOwnProperty(symbol)) {
-        allSymbolPrices[symbol] = { 'data': [last_price], 'seq': seq };
+        allSymbolPrices[symbol] = { 'data': [last_price], 'time': time };
         Object.keys(symbolData[symbol]['minute']).forEach(function (key) {
             symbolData[symbol]['minute'][key] = last_price;
         });
@@ -55,10 +55,19 @@ exports._setSymbolData = function (last_object) {
     symbolData[symbol]['minute']['last'] = last_price;
     symbolData[symbol]['minute']['max'] = Math.max(...allSymbolPrices[symbol]['data']);
     symbolData[symbol]['minute']['min'] = Math.min(...allSymbolPrices[symbol]['data']);
-    allSymbolPrices[symbol]['seq'] = seq;
+    allSymbolPrices[symbol]['time'] = time;
     allSymbolPrices[symbol]['latest'] = symbolData;
     return symbolData;
 };
+
+exports._checkSymbolDataExists = function (last_object) {
+    let time = last_object['time'];
+    let symbol = last_object['symbol'];
+    if (allSymbolPrices.hasOwnProperty(symbol) && allSymbolPrices[symbol]['time'] >= time) {
+        return true;
+    }
+    return false;
+}
 
 // Clear temp stored symbol data on server
 exports._refresh_all_symbol_data = function () {
