@@ -1,6 +1,5 @@
-const firebase_admin = require('firebase-admin');
-
-const serviceAccount = require('./fugle_firebase_config.json');
+const firebase_admin = require('firebase-admin'); // Firebase library
+const serviceAccount = require('./fugle_firebase_config.json'); // Firebase config
 
 const firebase = firebase_admin.initializeApp({
     credential: firebase_admin.credential.cert(serviceAccount),
@@ -12,17 +11,7 @@ const firebase = firebase_admin.initializeApp({
 
 const db = firebase.database();
 
-exports._set = function (_Path, _ChildName, _Value) {
-    var ref = db.ref(_Path);
-    return new Promise((resolve, reject) => {
-        ref.child(_ChildName).set(_Value).then(function () {
-            return resolve("Set succeed.");
-        }).catch(function (err) {
-            return reject("Set error:" + err);
-        });
-    });
-};
-
+// Add DB counter function
 exports._transactionCount = function (_Path, _AddCount, _Callback) {
     var ref = db.ref(_Path);
     return ref.transaction(function (currentRank) {
@@ -32,7 +21,7 @@ exports._transactionCount = function (_Path, _AddCount, _Callback) {
         return Promise.resolve(_Callback(_Count.snapshot.val()));
     });
 };
-
+// Set DB counter to 0
 exports._setCounterToZero = function (_Path) {
     var db_ref = db.ref(_Path);
     db_ref.once("value", function (snapshot) {
@@ -43,3 +32,34 @@ exports._setCounterToZero = function (_Path) {
         });
     });
 }
+
+// exports._setScbsribedSymbols = function (_Path, _UserID, _Symbol) {
+//     var db_ref = db.ref(`${_Path}/${_UserID}`);
+//     db_ref.once("value", function (snapshot) {
+//         if (snapshot.val() != null) {
+//             snapshot.ref.update({
+//                 subscribed: (snapshot.val().hasOwnProperty('subscribed')) ? `${snapshot.val()['subscribed']},${_Symbol}` : _Symbol
+//             });
+//         }
+//         else {
+//             db_ref.update({
+//                 counter: 0,
+//                 subscribed: _Symbol
+//             });
+//         }
+//     });
+// }
+
+// exports._getScbsribedSymbols = function (_Path, _UserID) {
+//     var db_ref = db.ref(`${_Path}/${_UserID}/subscribed`);
+//     return new Promise((resolve, reject) => {
+//         db_ref.once("value", function (snapshot) {
+//             if (snapshot.val() != null) {
+//                 return resolve(snapshot.val());
+//             }
+//             else {
+//                 return resolve(undefined);
+//             }
+//         });
+//     });
+// }
