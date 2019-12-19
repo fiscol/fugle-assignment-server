@@ -65,9 +65,9 @@ The base url for the API is:
 This get data API is a HTTP Route **GET** API.
 It will return a bunch of symbol inside a JSON object.
 
-Query parameter | Datatype
-----------------|---------
-user | Number, which is between 1 to 1000.
+| Query parameter | Datatype                            |
+| --------------- | ----------------------------------- |
+| user            | Number, which is between 1 to 1000. |
 
 HTTP Request example:
 * http://yourhostname:port/api/data?user=1
@@ -76,10 +76,10 @@ If you are testing in local default environment, use:
 * http://localhost:3000/api/data?user=1
 
 **Request rate limit**
-API checks target | Rate
-------------------|------
-User IP | 10 times per minute.
-Query parameter 'user' | 5 times per minute.
+| API checks target      | Rate                 |
+| ---------------------- | -------------------- |
+| User IP                | 10 times per minute. |
+| Query parameter 'user' | 5 times per minute.  |
 If user exceeded above rules threshold, the response will be a status 403 error with an error JSON data, representing current user total usage count.
 
 Success response (200):
@@ -144,10 +144,10 @@ Return example:
 ```
 
 Parameters:
-Parameter | Datatype
-----------|----------
-User name | String
-Stock Symbols | String ([symbols](https://iextrading.com/trading/eligible-symbols/) seperates with comma, up to 10 stocks per user.)
+| Parameter     | Datatype                                                                                                             |
+| ------------- | -------------------------------------------------------------------------------------------------------------------- |
+| User name     | String                                                                                                               |
+| Stock Symbols | String ([symbols](https://iextrading.com/trading/eligible-symbols/) seperates with comma, up to 10 stocks per user.) |
 
 Example:
 ```
@@ -193,10 +193,10 @@ Return example:
 ```
 
 Parameters:
-Parameter | Datatype
-----------|----------
-User name | String
-Stock Symbols | String ([symbols](https://iextrading.com/trading/eligible-symbols/) seperates with comma.)
+| Parameter     | Datatype                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------ |
+| User name     | String                                                                                     |
+| Stock Symbols | String ([symbols](https://iextrading.com/trading/eligible-symbols/) seperates with comma.) |
 
 Example:
 ```
@@ -240,9 +240,9 @@ Return example:
 ```
 
 Parameters:
-Parameter | Datatype
-----------|----------
-User name | String
+| Parameter | Datatype |
+| --------- | -------- |
+| User name | String   |
 
 Example:
 ```
@@ -281,14 +281,14 @@ You can run all the test with command:
 ```
 Or just run with interested test with file path,
 testable files listed as below:
-File name | Detail
-----------|--------
-test_api.js | test get data API in routes/api.js
-test_counter.js | test functions in functional/counter.js
-test_data_process.js | test functions in functional/data_process.js
-test_iex_socket.js | test functions in functional/iex_socket.js
-test_symbol_data.js | test functions in functional/symbol_data.js
-test_websocket.js | test websocket channels in routes/websocket.js
+| File name            | Detail                                         |
+| -------------------- | ---------------------------------------------- |
+| test_api.js          | test get data API in routes/api.js             |
+| test_counter.js      | test functions in functional/counter.js        |
+| test_data_process.js | test functions in functional/data_process.js   |
+| test_iex_socket.js   | test functions in functional/iex_socket.js     |
+| test_symbol_data.js  | test functions in functional/symbol_data.js    |
+| test_websocket.js    | test websocket channels in routes/websocket.js |
 
 For example, you can test with get data api:
 ```
