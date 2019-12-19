@@ -76,10 +76,12 @@ If you are testing in local default environment, use:
 * http://localhost:3000/api/data?user=1
 
 **Request rate limit**
+
 | API checks target      | Rate                 |
 | ---------------------- | -------------------- |
 | User IP                | 10 times per minute. |
 | Query parameter 'user' | 5 times per minute.  |
+
 If user exceeded above rules threshold, the response will be a status 403 error with an error JSON data, representing current user total usage count.
 
 Success response (200):
@@ -144,6 +146,7 @@ Return example:
 ```
 
 Parameters:
+
 | Parameter     | Datatype                                                                                                             |
 | ------------- | -------------------------------------------------------------------------------------------------------------------- |
 | User name     | String                                                                                                               |
@@ -193,6 +196,7 @@ Return example:
 ```
 
 Parameters:
+
 | Parameter     | Datatype                                                                                   |
 | ------------- | ------------------------------------------------------------------------------------------ |
 | User name     | String                                                                                     |
@@ -240,6 +244,7 @@ Return example:
 ```
 
 Parameters:
+
 | Parameter | Datatype |
 | --------- | -------- |
 | User name | String   |
@@ -281,6 +286,7 @@ You can run all the test with command:
 ```
 Or just run with interested test with file path,
 testable files listed as below:
+
 | File name            | Detail                                         |
 | -------------------- | ---------------------------------------------- |
 | test_api.js          | test get data API in routes/api.js             |
