@@ -1,6 +1,6 @@
 {
   "name": "fugle-assignment-server",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "This Web API server is built to retrieve real-time stock data from 3rd party API services.",
   "private": true,
   "scripts": {

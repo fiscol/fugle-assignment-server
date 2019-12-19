@@ -1,14 +1,13 @@
 module.exports = function (io) {
-    const symbol_data_service = require('./symbol_data'); // Set return symbol data with IEX last symbol data
-    const last_stock_url = 'https://ws-api.iextrading.com/1.0/last'; //  Local Websocket route
-    const socket_cli = require('socket.io-client')(last_stock_url); // Subscribe symbol test using socket-io.client
+    const symbol_data_service = require('./symbol_data'); // Set symbol minute data
+    const last_stock_url = 'https://ws-api.iextrading.com/1.0/last'; // Doc: https://iextrading.com/developers/docs/#last
+    const socket_cli = require('socket.io-client')(last_stock_url); // Use websocket service of IEX data using socket-io.client
 
     // Listen to the channel's messages
     socket_cli.on('message', last_object_str => {
         io.of('/last').to(JSON.parse(last_object_str)['symbol']).emit('room_message', JSON.parse(last_object_str));
-        // if (!symbol_data_service._checkSymbolDataExists(JSON.parse(last_object_str))) {
-        // Set return symbol data
-        symbol_data_service._setSymbolData(JSON.parse(last_object_str));
+        // Update symbol minute data
+        symbol_data_service._updateMinuteData(JSON.parse(last_object_str));
     })
 
     // Disconnect from the channel

@@ -32,34 +32,3 @@ exports._setCounterToZero = function (_Path) {
         });
     });
 }
-
-// exports._setScbsribedSymbols = function (_Path, _UserID, _Symbol) {
-//     var db_ref = db.ref(`${_Path}/${_UserID}`);
-//     db_ref.once("value", function (snapshot) {
-//         if (snapshot.val() != null) {
-//             snapshot.ref.update({
-//                 subscribed: (snapshot.val().hasOwnProperty('subscribed')) ? `${snapshot.val()['subscribed']},${_Symbol}` : _Symbol
-//             });
-//         }
-//         else {
-//             db_ref.update({
-//                 counter: 0,
-//                 subscribed: _Symbol
-//             });
-//         }
-//     });
-// }
-
-// exports._getScbsribedSymbols = function (_Path, _UserID) {
-//     var db_ref = db.ref(`${_Path}/${_UserID}/subscribed`);
-//     return new Promise((resolve, reject) => {
-//         db_ref.once("value", function (snapshot) {
-//             if (snapshot.val() != null) {
-//                 return resolve(snapshot.val());
-//             }
-//             else {
-//                 return resolve(undefined);
-//             }
-//         });
-//     });
-// }

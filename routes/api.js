@@ -5,7 +5,7 @@ const firebase = require('../firebase/firebase_db'); // Firebase related functio
 const schedule = require('../functional/schedule'); // Using schedule service to refresh Firebase counter
 
 // Set UserID / IP counter on Firebase to 0 every minute
-schedule.refresh_counter();
+schedule._refreshCounter();
 // Set HTTP route to /api/data
 api_router.get('/data', function (req, res) {
   // IP stored on Firebase should transform '.' to other format before stored
