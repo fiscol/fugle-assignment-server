@@ -26,7 +26,20 @@ exports._checkUserSubscribe = (user_name, symbols) => {
         fs.readFile(user_file, 'utf8', (err, data) => {
             let user_data = JSON.parse(data);
             // Check subscribed symbols in 'users.json' and new subscriptions total count
-            let subscribed_total = (user_data.hasOwnProperty(user_name)) ? user_data[user_name].split(',').length + symbols.split(',').length : symbols.split(',').length;
+            let subscribed_total = 0;
+            if (!user_data.hasOwnProperty(user_name)) {
+                subscribed_total = symbols.split(',').length;
+                return resolve(subscribed_total <= 10);
+            }
+            subscribed_total = user_data[user_name].split(',').length + symbols.split(',').length;
+            // Remove total count of repeat subscriptions
+            let subscribed_symbol_array = user_data[user_name].split(',');
+            let new_symbol_array = symbols.split(',');
+            new_symbol_array.forEach(new_symbol => {
+                if (subscribed_symbol_array.includes(new_symbol)) {
+                    subscribed_total--;
+                }
+            })
             return resolve(subscribed_total <= 10);
         });
     })
@@ -46,10 +59,10 @@ exports._updateUserAndSubscription = (user_name, symbols) => {
 }
 
 /**
-  * @function _checkSymbolSubscibed Find new symbols to subscribe for IEX data
+  * @function _checkSymbolSubscibedIEX Find new symbols to subscribe for IEX data
   * @returns {Array} New symbols array to subscribe IEX data
   */
-exports._checkSymbolSubscibed = (symbols) => {
+exports._checkSymbolSubscibedIEX = (symbols) => {
     return new Promise((resolve, reject) => {
         let symbol_file = path.resolve(__dirname, '../data/symbols_subscribe.json');
         fs.readFile(symbol_file, 'utf8', (err, data) => {
@@ -90,8 +103,22 @@ function updateUserData(user_name, symbols) {
         let user_file = path.resolve(__dirname, '../data/users.json');
         fs.readFile(user_file, 'utf8', (err, data) => {
             let user_data = JSON.parse(data);
-            let subscribe_symbol = (user_data.hasOwnProperty(user_name)) ? `${data[user_name]},${symbols}` : symbols;
-            user_data[user_name] = subscribe_symbol;
+            let user_subscribe_symbol = '';
+            // Check and remove repeat symbol subscriptions
+            if (user_data.hasOwnProperty(user_name)) {
+                let subscribed_symbol_array = user_data[user_name].split(',');
+                let new_symbol_array = symbols.split(',');
+                new_symbol_array.forEach(new_symbol => {
+                    if (subscribed_symbol_array.includes(new_symbol)) {
+                        subscribed_symbol_array.splice(subscribed_symbol_array.indexOf(new_symbol), 1);
+                    }
+                })
+                user_subscribe_symbol = subscribed_symbol_array.concat(new_symbol_array).join(',');
+            }
+            else {
+                user_subscribe_symbol = symbols;
+            }
+            user_data[user_name] = user_subscribe_symbol;
             fs.writeFile(user_file, JSON.stringify(user_data), () => {
                 return resolve('User data updated!');
             })
@@ -134,8 +161,12 @@ function handleUserUnsubscribe(user_name, symbols) {
             let user_data = JSON.parse(data);
             symbols.split(',').forEach(symbol => {
                 // Remove unsubscribed symbols from user subscribed symbol string
-                let symbol_index = user_data[user_name].split(',').indexOf(symbol);
-                user_data[user_name] = user_data[user_name].split(',').splice(symbol_index, 1).join(',');
+                let symbols_array = user_data[user_name].split(',');
+                let symbol_index = symbols_array.indexOf(symbol);
+                if (symbol_index !== -1) {
+                    symbols_array.splice(symbol_index, 1);
+                    user_data[user_name] = symbols_array.join(',');
+                }
             });
             fs.writeFile(user_file, JSON.stringify(user_data), () => {
                 return resolve('User data updated!');
@@ -157,10 +188,13 @@ function handleSymbolUnsubscribe(user_name, symbols) {
             symbols.split(',').forEach(symbol => {
                 // Remove user name from symbol subscriber list
                 let username_index = symbols_data[symbol]['users'].indexOf(user_name);
-                symbols_data[symbol]['users'].splice(username_index, 1);
+                if (username_index !== -1) {
+                    symbols_data[symbol]['users'].splice(username_index, 1);
+                }
                 // Add symbol of no subscriber to return array
                 if (symbols_data[symbol]['users'].length === 0) {
                     unsubscribe_symbols.push(symbol);
+                    delete symbols_data[symbol];
                 }
             });
             fs.writeFile(symbol_file, JSON.stringify(symbols_data), () => {

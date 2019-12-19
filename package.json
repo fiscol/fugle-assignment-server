@@ -1,7 +1,7 @@
 {
   "name": "fugle-assignment-server",
-  "version": "0.7.0",
-  "description": "This Web API server is built to retrieve real-time stock data from 3rd party API services.",
+  "version": "0.8.0",
+  "description": "This Web API/WebSocket server is built to provide real-time stock data from 3rd party API services and Websocket transmission.",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",

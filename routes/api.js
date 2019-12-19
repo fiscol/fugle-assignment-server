@@ -15,6 +15,9 @@ api_router.get('/data', (req, res) => {
   let IP = req.ip;
   // Get query parameter user
   let ID = req.query.user;
+  if (isNaN(ID) || ID > 1000 || ID < 1) {
+    res.status(403).json({ 'Error': 'Your user parameter is invalid.' });
+  }
   // Add IP / ID counter in 'counter.json' +1
   counter._addCount(IP, ID).then(count_data => {
     // If counter exceeds limit, return error code 403 and request records
@@ -30,7 +33,7 @@ api_router.get('/data', (req, res) => {
         })
         .catch(error => {
           // Return error code 500 if error happened
-          res.status(500).send(`Error: ${error}`);
+          res.status(500).json({ 'Error': error });
         })
         .then(hacker_news_return_data => {
           // Return success code 200 and JSON format result data

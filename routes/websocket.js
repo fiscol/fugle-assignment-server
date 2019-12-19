@@ -1,7 +1,6 @@
 module.exports = function (io) {
     const app = require('express');
     const ws_router = app.Router();
-    const socket_service = require('../functional/socket'); // Test from socket-io.client connect
     const data_process = require('../functional/data_process'); // Process user data and subscription
     const symbol_data_service = require('../functional/symbol_data'); // Set symbol minute data
     const schedule = require('../functional/schedule'); // Using schedule service to refresh temp-stored IEX symbol data per minute
@@ -9,8 +8,6 @@ module.exports = function (io) {
 
     // Refresh temp-stored IEX symbol data every minute
     schedule._refreshAllSymbolData();
-    // Test Websocket Route using socket-io.client
-    socket_service._subscribeTest('local', 'fb,AAPL');
     // Init data folder user and symbol subscription data
     data_process._initDataFiles();
 
@@ -27,10 +24,11 @@ module.exports = function (io) {
                         // Add user to symbols rooms
                         socket.join(symbols.split(','));
                         // Check if symbol subscribed before
-                        data_process._checkSymbolSubscibed(symbols).then(new_symbols => {
+                        data_process._checkSymbolSubscibedIEX(symbols).then(new_symbols => {
                             if (new_symbols.length > 0) {
                                 iex_service._subscribeIEX(new_symbols);
                             }
+                            io.of('/last').to(socket.id).emit('message', `Your symbols ${symbols} are subscribed!`);
                         })
                     })
                 }
@@ -43,25 +41,26 @@ module.exports = function (io) {
         socket.on('unsubscribe', (user_name, symbols) => {
             symbols = symbols.toUpperCase();
             // Remove user from symbol subscriber
-            data_process._handleUnsubscription(user_name, symbols).then(unsubscribe_symbols => {
-                // If symbols has no subscriber
-                if (unsubscribe_symbols.length > 0) {
+            data_process._handleUnsubscription(user_name, symbols).then(no_subscriber_symbols => {
+                // If there are symbols has no subscriber
+                if (no_subscriber_symbols.length > 0) {
                     // Unsubscribe symbols from IEX socket
-                    iex_service._unsubscribeIEX(unsubscribe_symbols);
-                    // Close symbols room
-                    unsubscribe_symbols.forEach(symbol => {
+                    iex_service._unsubscribeIEX(no_subscriber_symbols);
+                    // Close symbols socket room
+                    no_subscriber_symbols.split(',').forEach(symbol => {
                         io.of('/last').in(symbol).clients((error, socket_ids) => {
                             socket_ids.forEach(socket_id => io.sockets.sockets[socket_id].leave(symbol));
                         });
                     })
                 }
+                io.of('/last').to(socket.id).emit('message', `Your symbols ${symbols} are unsubscribed!`);
             })
         })
-        // Get symbols minute data
-        socket.on('minute_data', symbols => {
-            symbols = symbols.toUpperCase();
-            let minute_data = symbol_data_service._getMinuteData(symbols);
-            io.of('/last').to(socket.id).emit('message', minute_data);
+        // Get user subscribed symbols minute data
+        socket.on('minute_data', user_name => {
+            symbol_data_service._getMinuteData(user_name).then(minute_data => {
+                io.of('/last').to(socket.id).emit('minute_message', minute_data);
+            });
         })
     });
     // Websocket close event

@@ -5,7 +5,7 @@ module.exports = function (io) {
 
     // Listen to the channel's messages
     socket_cli.on('message', last_object_str => {
-        io.of('/last').to(JSON.parse(last_object_str)['symbol']).emit('room_message', JSON.parse(last_object_str));
+        io.of('/last').to(JSON.parse(last_object_str)['symbol']).emit('subscribe_message', JSON.parse(last_object_str));
         // Update symbol minute data
         symbol_data_service._updateMinuteData(JSON.parse(last_object_str));
     })

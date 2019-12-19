@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fugle socket client example page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 13px Helvetica, Arial;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages li {
+            padding: 5px 10px;
+        }
+
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+
+        #messages {
+            margin-bottom: 40px
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var socket = io.connect('http://localhost:3000/last');
+            // Emit subscribe last data event
+            socket.emit('subscribe', 'UserA', 'snap,fb,AAPL,A,AA,AAAU,AADR,AAL,AAMC,AAME');
+            setInterval(() => {
+                // Emit subscribe minute data event
+                socket.emit('minute_data', 'UserA');
+            }, 5000);
+            setTimeout(() => {
+                // Emit unsubscribe event
+                socket.emit('unsubscribe', 'UserA', 'AAAU,AADR,AAL,AAMC,AAME');
+            }, 10000);
+            // Receive socket system message data
+            socket.on('message', message => {
+                $('#messages').append($('<li>').text(JSON.stringify(message)));
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+            // Receive socket symbol subscribed last data
+            socket.on('subscribe_message', data => {
+                $('#messages').append($('<li>').text(JSON.stringify(data)));
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+            // Receive socket symbol subscribed minute data
+            socket.on('minute_message', data => {
+                $('#messages').append($('<li>').text(JSON.stringify(data)));
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+        });
+    </script>
+</body>
+
+</html>
