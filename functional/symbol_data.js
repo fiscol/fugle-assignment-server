@@ -21,7 +21,7 @@ let allSymbolPrices = {};
   *         {'first': 120.34, 'max': 123.20, 'min': 119.55, 'last': 123.20}
   *     }
   */
-exports._updateMinuteData = function (last_object) {
+exports._updateMinuteData = last_object => {
     let minute_data = {};
     let time = last_object['time'];
     let symbol = last_object['symbol'];
@@ -53,7 +53,7 @@ exports._updateMinuteData = function (last_object) {
 };
 
 // Get symbols minute data
-exports._getMinuteData = function (symbols) {
+exports._getMinuteData = symbols => {
     let minute_data = {};
     symbols.split(',').forEach(symbol => {
         if (allSymbolPrices.hasOwnProperty(symbol)) {
@@ -72,6 +72,6 @@ exports._getMinuteData = function (symbols) {
 }
 
 // Clear 'allSymbolPrices' symbol data on server
-exports._refreshAllSymbolPrices = function () {
+exports._refreshAllSymbolPrices = () => {
     allSymbolPrices = {};
 }

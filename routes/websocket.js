@@ -15,7 +15,7 @@ module.exports = function (io) {
     data_process._initDataFiles();
 
     // Set Websocket route to /last
-    io.of('/last').on('connection', function (socket) {
+    io.of('/last').on('connection', socket => {
         // Subscribe with symbols to receive IEX last data
         socket.on('subscribe', (user_name, symbols) => {
             symbols = symbols.toUpperCase();
@@ -58,7 +58,7 @@ module.exports = function (io) {
             })
         })
         // Get symbols minute data
-        socket.on('minute_data', (symbols) => {
+        socket.on('minute_data', symbols => {
             symbols = symbols.toUpperCase();
             let minute_data = symbol_data_service._getMinuteData(symbols);
             io.of('/last').to(socket.id).emit('message', minute_data);

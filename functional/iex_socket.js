@@ -14,13 +14,13 @@ module.exports = function (io) {
     socket_cli.on('disconnect', () => console.log('Disconnected.'))
 
     const functions = {
-        _subscribeIEX: function (symbols) {
+        _subscribeIEX: symbols => {
             // Subscribe to topics (i.e. appl,fb,aig+)
-            socket_cli.emit('subscribe', symbols)
+            socket_cli.emit('subscribe', symbols);
         },
-        _unsubscribeIEX: function (symbols) {
+        _unsubscribeIEX: symbols => {
             // Subscribe to topics (i.e. appl,fb,aig+)
-            socket_cli.emit('unsubscribe', symbols)
+            socket_cli.emit('unsubscribe', symbols);
         }
     }
     return functions;

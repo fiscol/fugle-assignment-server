@@ -3,8 +3,8 @@ const path = require('path');
 /**
   * @function _initDataFiles Clear 'users.json' and 'symbols_subscribe.json' in 'data' folder when socket io start service
   */
-exports._initDataFiles = function () {
-    return new Promise(function (resolve, reject) {
+exports._initDataFiles = () => {
+    return new Promise((resolve, reject) => {
         let user_file = path.resolve(__dirname, '../data/users.json');
         let symbol_subscribe_file = path.resolve(__dirname, '../data/symbols_subscribe.json');
         // Files will be reset to an empty curly brackets {}
@@ -20,8 +20,8 @@ exports._initDataFiles = function () {
   * @function _checkUserSubscribe Check user total subscribed symbols count is within the threshold (Max: 10)
   * @returns {Boolean} Total subscriptions count is valid or invalid
   */
-exports._checkUserSubscribe = function (user_name, symbols) {
-    return new Promise(function (resolve, reject) {
+exports._checkUserSubscribe = (user_name, symbols) => {
+    return new Promise((resolve, reject) => {
         let user_file = path.resolve(__dirname, '../data/users.json');
         fs.readFile(user_file, 'utf8', (err, data) => {
             let user_data = JSON.parse(data);
@@ -35,8 +35,8 @@ exports._checkUserSubscribe = function (user_name, symbols) {
 /**
   * @function _updateUserAndSubscription Update users and symbols_subscribe data in files
   */
-exports._updateUserAndSubscription = function (user_name, symbols) {
-    return new Promise(function (resolve, reject) {
+exports._updateUserAndSubscription = (user_name, symbols) => {
+    return new Promise((resolve, reject) => {
         updateUserData(user_name, symbols).then(() => {
             updateSymbolsSubscribeData(user_name, symbols).then(() => {
                 return resolve('Data updated!');
@@ -49,8 +49,8 @@ exports._updateUserAndSubscription = function (user_name, symbols) {
   * @function _checkSymbolSubscibed Find new symbols to subscribe for IEX data
   * @returns {Array} New symbols array to subscribe IEX data
   */
-exports._checkSymbolSubscibed = function (symbols) {
-    return new Promise(function (resolve, reject) {
+exports._checkSymbolSubscibed = (symbols) => {
+    return new Promise((resolve, reject) => {
         let symbol_file = path.resolve(__dirname, '../data/symbols_subscribe.json');
         fs.readFile(symbol_file, 'utf8', (err, data) => {
             let symbols_data = JSON.parse(data);
@@ -72,8 +72,8 @@ exports._checkSymbolSubscibed = function (symbols) {
 /**
   * @function _handleUnsubscription Remove user from symbol subscriber data
   */
-exports._handleUnsubscription = function (user_name, symbols) {
-    return new Promise(function (resolve, reject) {
+exports._handleUnsubscription = (user_name, symbols) => {
+    return new Promise((resolve, reject) => {
         handleUserUnsubscribe(user_name, symbols).then(() => {
             handleSymbolUnsubscribe(user_name, symbols).then(() => {
                 return resolve('Data unsubscribed!');
@@ -86,7 +86,7 @@ exports._handleUnsubscription = function (user_name, symbols) {
   * @function updateUserData Update 'users.json' data with new user_name and subscribed symbols
   */
 function updateUserData(user_name, symbols) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         let user_file = path.resolve(__dirname, '../data/users.json');
         fs.readFile(user_file, 'utf8', (err, data) => {
             let user_data = JSON.parse(data);
@@ -103,7 +103,7 @@ function updateUserData(user_name, symbols) {
   * @function updateSymbolsSubscribeData Update 'symbols_subscribe.json' data with new subscriber user name and IEX data subscribed status
   */
 function updateSymbolsSubscribeData(user_name, symbols) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         let symbol_file = path.resolve(__dirname, '../data/symbols_subscribe.json');
         fs.readFile(symbol_file, 'utf8', (err, data) => {
             let symbols_data = JSON.parse(data);
@@ -128,7 +128,7 @@ function updateSymbolsSubscribeData(user_name, symbols) {
   * @function handleUserUnsubscribe Remove unsubscribed symbols from 'users.json'
   */
 function handleUserUnsubscribe(user_name, symbols) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         let user_file = path.resolve(__dirname, '../data/users.json');
         fs.readFile(user_file, 'utf8', (err, data) => {
             let user_data = JSON.parse(data);
@@ -149,7 +149,7 @@ function handleUserUnsubscribe(user_name, symbols) {
   * @returns {Array} Array of no subscriber symbols, return to unsubscribe IEX data service
   */
 function handleSymbolUnsubscribe(user_name, symbols) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         let symbol_file = path.resolve(__dirname, '../data/symbols_subscribe.json');
         fs.readFile(symbol_file, 'utf8', (err, data) => {
             let symbols_data = JSON.parse(data);
