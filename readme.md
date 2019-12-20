@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/fiscol/fugle-assignment-server.svg?style=svg)](https://circleci.com/gh/fiscol/fugle-assignment-server)
+
 # Fugle API Server
 
 This API server is designed for users to receive real-time stock data by requesting with [HTTP/1.1 request](https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html) and [Websocket](https://developer.mozilla.org/zh-TW/docs/WebSockets/Writing_WebSocket_client_applications) route.
