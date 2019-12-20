@@ -57,7 +57,7 @@ describe('#Test Websocket route services', () => {
         });
         describe('#2 Valid subscribe test', function () {
             this.timeout(10000);
-            it(`Total subscribe exceeds limit error message should be sent back`, done => {
+            it(`Subscribe succeed message should be sent back`, done => {
                 socket_cli.emit('subscribe', 'user1', 'fb,snap');
                 socket_cli.on('message', message_data => {
                     if (message_data.Subscribe) {

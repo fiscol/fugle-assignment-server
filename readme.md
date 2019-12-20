@@ -321,7 +321,7 @@ Socket connection worked...
       #1 Invalid subscribe test
         ✓ Total subscribe exceeds limit error message should be sent back
       #2 Valid subscribe test
-        ✓ Total subscribe exceeds limit error message should be sent back
+        ✓ Subscribe succeed message should be sent back
     #Unsubscribe test cases
       #3 Unsubscribe subscribed symbol test
         ✓ Unsubscribed succeed message should be sent back

@@ -1,6 +1,6 @@
 {
   "name": "fugle-assignment-server",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "This Web API/WebSocket server is built to provide real-time stock data from 3rd party API services and Websocket transmission.",
   "private": true,
   "scripts": {
