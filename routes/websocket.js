@@ -1,6 +1,4 @@
 module.exports = function (io) {
-    const app = require('express');
-    const ws_router = app.Router();
     const data_process = require('../functional/data_process'); // Process user data and subscription
     const symbol_data_service = require('../functional/symbol_data'); // Set symbol minute data
     const schedule = require('../functional/schedule'); // Using schedule service to refresh temp-stored IEX symbol data per minute
@@ -67,5 +65,4 @@ module.exports = function (io) {
     io.on('close', () => {
         console.log('WebSocket was closed');
     })
-    return ws_router;
 }

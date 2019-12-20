@@ -10,7 +10,7 @@ app.io = io;
 // HTTP API Router
 var API_Router = require('./routes/api');
 // Websocket Router
-var WebSocket_Router = require('./routes/websocket')(io);
+require('./routes/websocket')(io);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

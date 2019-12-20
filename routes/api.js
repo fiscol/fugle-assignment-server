@@ -10,14 +10,20 @@ counter._initDataFiles();
 schedule._refreshCounter();
 
 // Set HTTP route to /api/data
-api_router.get('/data', (req, res) => {
-  // Get request IP
-  let IP = req.ip;
+api_router.get('/data', (req, res, next) => {
   // Get query parameter user
   let ID = req.query.user;
   if (isNaN(ID) || ID > 1000 || ID < 1) {
     res.status(403).json({ 'Error': 'Your user parameter is invalid.' });
   }
+  else{
+    next();
+  }
+}, function (req, res) {
+  // Get request IP
+  let IP = req.ip;
+  // Get query parameter user
+  let ID = req.query.user;
   // Add IP / ID counter in 'counter.json' +1
   counter._addCount(IP, ID).then(count_data => {
     // If counter exceeds limit, return error code 403 and request records

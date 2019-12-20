@@ -290,10 +290,6 @@ testable files listed as below:
 | File name            | Detail                                         |
 | -------------------- | ---------------------------------------------- |
 | test_api.js          | test get data API in routes/api.js             |
-| test_counter.js      | test functions in functional/counter.js        |
-| test_data_process.js | test functions in functional/data_process.js   |
-| test_iex_socket.js   | test functions in functional/iex_socket.js     |
-| test_symbol_data.js  | test functions in functional/symbol_data.js    |
 | test_websocket.js    | test websocket channels in routes/websocket.js |
 
 For example, you can test with get data api:
@@ -302,7 +298,19 @@ For example, you can test with get data api:
 ```
 And the output should look like this:
 ```
-  
+  #Test HTTP GET data API
+    #1 Request with valid ID user=1
+      ✓ Should return status 200, with JSON data with 'result' attribute. (721ms)
+    #2 Request with invalid ID user=1001
+      ✓ Should return status 403, with Error message JSON data.
+    #3 Request with same valid ID exceeds rate limit
+      ✓ Should return status 403, with invalid count JSON data. (2632ms)
+    #4 Request with same IP exceeds rate limit
+      ✓ Should return status 403, with invalid count JSON data. (2632ms)
+
+
+  4 passing (6s)
+
 ```
 
 ## Built With
@@ -311,7 +319,10 @@ And the output should look like this:
 * [socket.io-client](https://socket.io/docs/client-api/) - Using socket.io-client to receive IEX realtime Websocket client side data.
 * [node-fetch](https://www.npmjs.com/package/node-fetch) - For retrieving 3rd party async API with convenience.
 * [node-schedule](https://www.npmjs.com/package/node-schedule) - For refreshing related file data per minute with a cron-job format package.
-* [mocha](https://mochajs.org) - For testing cases in developing environment.
+* [async](https://www.npmjs.com/package/async) - Using async series in test case to avoid callback hell happens.
+* [mocha](https://mochajs.org) - For testing cases in development environment.
+* [supertest](https://www.npmjs.com/package/supertest) - To test HTTP API route in development test case.
+* [chai](https://www.npmjs.com/package/chai) - Using chai.expect in development test case.
 
 
 ## Versioning
