@@ -32,8 +32,9 @@ describe('#Test HTTP GET data API', () => {
                         return done(err);
                     }
                     expect(res.body.hasOwnProperty('result')).to.be.equal(true);
-                    counter._setCounterToZero();
-                    return done();
+                    counter._setCounterToZero().then(() => {
+                        return done();
+                    });
                 });
         });
     });
@@ -70,8 +71,9 @@ describe('#Test HTTP GET data API', () => {
                     return done(err);
                 }
                 expect(res[5].body.ID).to.be.greaterThan(5);
-                counter._setCounterToZero();
-                return done();
+                counter._setCounterToZero().then(() => {
+                    return done();
+                });
             });
         });
     });
