@@ -19,7 +19,9 @@ node -v
 ```
 It should return the installed version as reply.
 
-Another related tool is [NPM](https://www.npmjs.com). NPM is a package manager for Node.js packages. It should also be installed with Node.js installation.
+Another related tool is [NPM](https://www.npmjs.com).
+
+NPM is a package manager for Node.js packages. It should also be installed with Node.js installation.
 
 Also, make sure to check it's being successfully installed with command:
 
@@ -35,11 +37,13 @@ In the terminal environment, using git clone to pull down this project in your t
 >> git clone 'https://github.com/fiscol/fugle-assignment-server.git'
 ```
 Thus, you have cloned the project to your local environment.
+
 Next, switch to the project root directory, use 'npm install' to install npm dependencies of this Node.js project.
 ```
 >> npm install
 ```
 Now the server is finished the installation.
+
 It's your time to start the server with command 'npm start'.
 ```
 >> npm start
@@ -55,6 +59,7 @@ Since the server is up, our next step will be interact with its API and Websocke
 ## Web API
 
 API Reference
+
 The Web API is based on REST, returns JSON response, and returns standard HTTP response codes.
 
 The base url for the API is:
@@ -63,6 +68,7 @@ The base url for the API is:
 **Get Data API**
 
 This get data API is a HTTP Route **GET** API.
+
 It will return a bunch of symbol inside a JSON object.
 
 | Query parameter | Datatype                            |
@@ -97,6 +103,7 @@ Error response (403):
 ## Websocket route
 
 We use [socket.io](https://socket.io/docs/) for our WebSocket server.
+
 You can connect to this route and using subscribe to get your [IEX](https://iextrading.com/apps/stocks/) real-time stock data.
 
 For clients to subscribe, use:
@@ -144,6 +151,7 @@ Belows are the websocket events related to stock data.
 **Subscribe**
 
 Subscribe is the core function of this websocket route.
+
 Clients can **select up to 10 stocks per user** with subscribe channel, the **JSON** format [last IEX stock price](https://iextrading.com/developers/docs/#last) will be sent back to clients through 'subscribe_message' channel immediately.
 
 Return example:
@@ -194,6 +202,7 @@ socket_cli.on('subscribe_message', data => {
 **Unsubscribe**
 
 Unsubscribe is the channel to cancel subscribed stock data transmission.
+
 Clients can send stock symbols with this 'unsubscribe' channel, the unsubscribed succeed message will be sent back to clients through channel 'message'.
 
 Return example:
@@ -234,6 +243,7 @@ socket_cli.on('message', message_data => {
 **Get minute data**
 
 Minute data is the trend of specific stock price in this minute, includes indexes like 'max', 'min', 'first', 'last' price data.
+
 Clients can send user name with this 'minute_data' channel, minute data of subscribed stocks by this user will be sent back to clients through channel 'minute_message'.
 
 Minute data format:
@@ -285,6 +295,7 @@ socket_cli.on('minute_message', data => {
 ## Test
 
 We use [mocha](https://mochajs.org) as our dev/testing tool for this module.
+
 And we added [CircleCI service](https://circleci.com/gh/fiscol/fugle-assignment-server) to pre-test this project after every git push events.
 
 You can run all the test with command:
@@ -354,6 +365,7 @@ Development use:
 ## Versioning
 
 This version is ver.1.0.0.
+
 Based on [SemVer](http://semver.org/) for versioning.
 
 With Node.js using ver.12.13.0 and NPM using ver.6.13.4.
