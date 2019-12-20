@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "test": "mocha"
+    "test": "mocha --exit"
   },
   "dependencies": {
     "async": "^3.1.0",

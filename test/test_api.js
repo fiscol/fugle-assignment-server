@@ -6,14 +6,16 @@ const counter = require('../functional/counter'); // Counter function
 
 before(function (done) {
     // Init data folder counter data before tests
-    counter._initDataFiles();
-    done();
+    counter._initDataFiles().then(() => {
+        done();
+    });
 });
 
 after(function (done) {
     // Re-initialize data folder counter data after tests
-    counter._initDataFiles();
-    done();
+    counter._initDataFiles().then(() => {
+        done();
+    });
 });
 
 // Begin test routes/api.js

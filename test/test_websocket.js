@@ -9,35 +9,37 @@ let socket_cli;
 
 before(function (done) {
     // Init data folder user and symbol subscription data before tests
-    data_process._initDataFiles();
-    // Setup websocket connection
-    socket_cli = ioClient.connect(`http://localhost:${process.env['PORT']}/last`, {
-        transports: ['websocket'],
-        'force new connection': true
+    data_process._initDataFiles().then(() => {
+        // Setup websocket connection
+        socket_cli = ioClient.connect(`http://localhost:${process.env['PORT']}/last`, {
+            transports: ['websocket'],
+            'force new connection': true
+        });
+        socket_cli.on('connect', function () {
+            console.log('Socket connection worked...');
+            done();
+        });
+        socket_cli.on('disconnect', function () {
+            console.log('Socket disconnected...');
+        });
     });
-    socket_cli.on('connect', function () {
-        console.log('Socket connection worked...');
-        done();
-    });
-    socket_cli.on('disconnect', function () {
-        console.log('Socket disconnected...');
-    })
 });
 
 after(function (done) {
     // Re-initialize data folder user and symbol subscription data after tests
-    data_process._initDataFiles();
-    // Cleanup, disconnect websocket and close websocket
-    if (socket_cli.connected) {
-        console.log('Socket disconnecting...');
-        socket_cli.disconnect();
-        socket_cli.on('disconnect', () => console.log('Socket disconnected.'));
-        app.io.close();
-        done();
-    } else {
-        console.log('No socket connection to break...');
-        done();
-    }
+    data_process._initDataFiles().then(() => {
+        // Cleanup, disconnect websocket and close websocket
+        if (socket_cli.connected) {
+            console.log('Socket disconnecting...');
+            socket_cli.disconnect();
+            socket_cli.on('disconnect', () => console.log('Socket disconnected.'));
+            app.io.close();
+            done();
+        } else {
+            console.log('No socket connection to break...');
+            done();
+        }
+    });
 });
 
 // Begin test routes/websocket.js
