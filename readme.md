@@ -34,7 +34,7 @@ If you have installed above tools in your environment, next step will be the ser
 
 In the terminal environment, using git clone to pull down this project in your targer directory.
 ```
->> git clone 'https://github.com/fiscol/fugle-assignment-server.git'
+>> git clone https://github.com/fiscol/fugle-assignment-server.git
 ```
 Thus, you have cloned the project to your local environment.
 
@@ -51,7 +51,7 @@ It's your time to start the server with command 'npm start'.
 And you should see the server started message just like below shows:
 ```
 > fugle-assignment-server@1.0.0 start /path/fugle_assignment_server
-> node ./bin/www
+> node app.js
 ```
 Since the server is up, our next step will be interact with its API and Websocket services.
 
@@ -117,10 +117,10 @@ You might have to replace 'http' with 'ws' while using some socket client tool.
 We have examples for both frontend client-side HTML file and Node.js server side using [socket.io-client](https://socket.io/docs/client-api/) in the 'example' folder of this project.
 
 Or use the client demo page directly:
-```
+
 local:
-http://localhost:3000/demo
-```
+* http://localhost:3000/demo
+
 
 HTML Example:
 ```
