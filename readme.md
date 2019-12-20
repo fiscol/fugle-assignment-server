@@ -285,6 +285,7 @@ socket_cli.on('minute_message', data => {
 ## Test
 
 We use [mocha](https://mochajs.org) as our dev/testing tool for this module.
+And we added [CircleCI service](https://circleci.com/gh/fiscol/fugle-assignment-server) to pre-test this project after every git push events.
 
 You can run all the test with command:
 ```
