@@ -6,8 +6,8 @@ socket_cli.on('connect', () => {
     console.log('Connected to socket.');
 });
 // Receive socket system message data
-socket_cli.on('message', message => {
-    console.log(message);
+socket_cli.on('message', message_data => {
+    console.log(message_data);
 });
 // Receive socket symbol last data
 socket_cli.on('subscribe_message', data => {
@@ -30,17 +30,20 @@ let unsubscribeData = (user_name, symbols) => {
     socket.emit('unsubscribe', user_name, symbols);
 }
 
-let getMiueteData = (user_name, interval) => {
+let getMinuteData = (user_name, interval) => {
     // Emit minute data event
     setInterval(() => {
         socket_cli.emit('minete_data', user_name);
     }, interval);
 }
 
-subscribeData('New user', 'fb,AAPL');
+/**
+ * Call the socket io client methods
+ */
+// subscribeData('New user', 'fb,AAPL');
 
-setTimeout(() => {
-    unsubscribeData('New user', 'fb');
-}, 10000);
+// setTimeout(() => {
+//     unsubscribeData('New user', 'fb');
+// }, 10000);
 
-getMiueteData('New user', 5000);
+// getMinuteData('New user', 5000);

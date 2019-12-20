@@ -109,6 +109,12 @@ You might have to replace 'http' with 'ws' while using some socket client tool.
 
 We have examples for both frontend client-side HTML file and Node.js server side using [socket.io-client](https://socket.io/docs/client-api/) in the 'example' folder of this project.
 
+Or use the client demo page directly:
+```
+local:
+http://localhost:3000/demo
+```
+
 HTML Example:
 ```
 // Require socket.io library
@@ -138,7 +144,7 @@ Belows are the websocket events related to stock data.
 **Subscribe**
 
 Subscribe is the core function of this websocket route.
-Clients can **select up to 10 stocks per user** with subscribe channel, the **JSON** format stock price will be sent back to clients through 'subscribe_message' channel immediately.
+Clients can **select up to 10 stocks per user** with subscribe channel, the **JSON** format [last IEX stock price](https://iextrading.com/developers/docs/#last) will be sent back to clients through 'subscribe_message' channel immediately.
 
 Return example:
 ```
@@ -161,8 +167,8 @@ HTML Example:
 // Emit subscribe event
 socket.emit('subscribe', 'UserA', 'snap,fb,AAPL,A,AA,AAAU,AADR');
 
-socket.on('message', message => {
-    // Error or system message
+socket.on('message', message_data => {
+    // Subscribe error or Subscribe succeed message data
 });
 
 socket.on('subscribe_message', data => {
@@ -175,8 +181,8 @@ Node.js server Example:
 // Emit subscribe event
 socket_cli.emit('subscribe', 'UserB', 'snap,fb,AAPL');
 
-socket_cli.on('message', message => {
-    // Error or system message
+socket_cli.on('message', message_data => {
+    // Subscribe error or Subscribe succeed message data
 });
 
 socket_cli.on('subscribe_message', data => {
@@ -192,7 +198,7 @@ Clients can send stock symbols with this 'unsubscribe' channel, the unsubscribed
 
 Return example:
 ```
-"Your symbols 'FB,AAPL' are unsubscribed!"
+{"Unsubscribe": "Your symbols 'FB,AAPL' are unsubscribed!"}
 ```
 
 Parameters:
@@ -211,8 +217,8 @@ HTML Example:
 // Emit unsubscribe event
 socket.emit('unsubscribe', 'UserA', 'fb,AAPL');
 
-socket.on('message', message => {
-    // Return unsubscribed message
+socket.on('message', message_data => {
+    // Return unsubscribed message data
 });
 ```
 Node.js server Example:
@@ -220,8 +226,8 @@ Node.js server Example:
 // Emit unsubscribe event
 socket_cli.emit('subscribe', 'UserB', 'snap,fb,AAPL');
 
-socket_cli.on('message', message => {
-    // Return unsubscribed message
+socket_cli.on('message', message_data => {
+    // Return unsubscribed message data
 });
 ```
 
@@ -296,20 +302,37 @@ For example, you can test with get data api:
 ```
 >> npm test test/test_api.js
 ```
-And the output should look like this:
+The output of full npm test should look like this:
 ```
+  listening on port:3000
+Socket connection worked...
   #Test HTTP GET data API
     #1 Request with valid ID user=1
-      ✓ Should return status 200, with JSON data with 'result' attribute. (721ms)
+      ✓ Should return status 200, with JSON data with 'result' attribute. (714ms)
     #2 Request with invalid ID user=1001
       ✓ Should return status 403, with Error message JSON data.
     #3 Request with same valid ID exceeds rate limit
-      ✓ Should return status 403, with invalid count JSON data. (2632ms)
+      ✓ Should return status 403, with invalid count JSON data. (2598ms)
     #4 Request with same IP exceeds rate limit
-      ✓ Should return status 403, with invalid count JSON data. (2632ms)
+      ✓ Should return status 403, with invalid count JSON data. (2678ms)
 
+  #Test Websocket route services
+    #Subscribe test cases
+      #1 Invalid subscribe test
+        ✓ Total subscribe exceeds limit error message should be sent back
+      #2 Valid subscribe test
+        ✓ Total subscribe exceeds limit error message should be sent back
+    #Unsubscribe test cases
+      #3 Unsubscribe subscribed symbol test
+        ✓ Unsubscribed succeed message should be sent back
+    #Get minute data test cases
+      #4 Get user subscribed minute data test
+        ✓ Minute data should be sent back with valid attributes
 
-  4 passing (6s)
+Socket disconnecting...
+Socket disconnected...
+
+  8 passing (6s)
 
 ```
 
@@ -320,6 +343,8 @@ And the output should look like this:
 * [node-fetch](https://www.npmjs.com/package/node-fetch) - For retrieving 3rd party async API with convenience.
 * [node-schedule](https://www.npmjs.com/package/node-schedule) - For refreshing related file data per minute with a cron-job format package.
 * [async](https://www.npmjs.com/package/async) - Using async series in test case to avoid callback hell happens.
+
+Development use:
 * [mocha](https://mochajs.org) - For testing cases in development environment.
 * [supertest](https://www.npmjs.com/package/supertest) - To test HTTP API route in development test case.
 * [chai](https://www.npmjs.com/package/chai) - Using chai.expect in development test case.

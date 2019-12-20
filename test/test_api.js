@@ -4,9 +4,22 @@ const async = require('async');
 const app = require('../app');
 const counter = require('../functional/counter'); // Counter function
 
-// Begin test routes/test_api.js
+before(function (done) {
+    // Init data folder counter data before tests
+    counter._initDataFiles();
+    done();
+});
+
+after(function (done) {
+    // Re-initialize data folder counter data after tests
+    counter._initDataFiles();
+    done();
+});
+
+// Begin test routes/api.js
 describe('#Test HTTP GET data API', () => {
-    describe('#1 Request with valid ID user=1', () => {
+    describe('#1 Request with valid ID user=1', function () {
+        this.timeout(5000);
         it(`Should return status 200, with JSON data with 'result' attribute.`, done => {
             supertest(app)
                 .get('/api/data')
@@ -22,7 +35,8 @@ describe('#Test HTTP GET data API', () => {
                 });
         });
     });
-    describe('#2 Request with invalid ID user=1001', () => {
+    describe('#2 Request with invalid ID user=1001', function () {
+        this.timeout(5000);
         it(`Should return status 403, with Error message JSON data.`, done => {
             supertest(app)
                 .get('/api/data')
@@ -37,7 +51,8 @@ describe('#Test HTTP GET data API', () => {
                 });
         });
     });
-    describe('#3 Request with same valid ID exceeds rate limit', () => {
+    describe('#3 Request with same valid ID exceeds rate limit', function () {
+        this.timeout(10000);
         it(`Should return status 403, with invalid count JSON data.`, done => {
             // Try request 6 times with same user ID to exceed rate limit
             let request = supertest(app);
@@ -58,7 +73,8 @@ describe('#Test HTTP GET data API', () => {
             });
         });
     });
-    describe('#4 Request with same IP exceeds rate limit', () => {
+    describe('#4 Request with same IP exceeds rate limit', function () {
+        this.timeout(10000);
         it(`Should return status 403, with invalid count JSON data.`, done => {
             // Try request 11 times with same user IP to exceed rate limit
             let request = supertest(app);

@@ -26,12 +26,12 @@ module.exports = function (io) {
                             if (new_symbols.length > 0) {
                                 iex_service._subscribeIEX(new_symbols);
                             }
-                            io.of('/last').to(socket.id).emit('message', `Your symbols ${symbols} are subscribed!`);
+                            io.of('/last').to(socket.id).emit('message', { 'Subscribe': `Your symbols ${symbols} are subscribed!` });
                         })
                     })
                 }
                 else {
-                    io.of('/last').to(socket.id).emit('message', 'Your total subscribed symbol exceeds the limit.');
+                    io.of('/last').to(socket.id).emit('message', { 'Error': 'Your total subscribed symbol exceeds the limit.' });
                 }
             });
         })
@@ -51,7 +51,7 @@ module.exports = function (io) {
                         });
                     })
                 }
-                io.of('/last').to(socket.id).emit('message', `Your symbols ${symbols} are unsubscribed!`);
+                io.of('/last').to(socket.id).emit('message', { 'Unsubscribe': `Your symbols ${symbols} are unsubscribed!` });
             })
         })
         // Get user subscribed symbols minute data

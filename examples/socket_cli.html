@@ -52,8 +52,8 @@
                 socket.emit('unsubscribe', 'UserA', 'AAAU,AADR,AAL,AAMC,AAME');
             }, 10000);
             // Receive socket system message data
-            socket.on('message', message => {
-                $('#messages').append($('<li>').text(JSON.stringify(message)));
+            socket.on('message', message_data => {
+                $('#messages').append($('<li>').text(JSON.stringify(message_data)));
                 window.scrollTo(0, document.body.scrollHeight);
             });
             // Receive socket symbol subscribed last data
